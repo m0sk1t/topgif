@@ -9,34 +9,42 @@ import {
   Text,
   View,
   Image,
-  // Platform,
   Picker,
   StyleSheet,
+  AsyncStorage,
   ImageBackground,
+  TouchableOpacity,
   ActivityIndicator,
-  TouchableHighlight,
 } from 'react-native';
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+} from "react-native-admob";
 
-const tags = {
-  'dog': 'dog',
-  'fun': 'fun',
-  'cat': 'cat',
-  'kid': 'kid',
-  'top': 'top',
-  'lol': 'lol',
-};
+import {
+  TAGS,
+  API_KEY,
+  STRINGS,
+  SMART_AD,
+  FLAG_IMAGES,
+  INTERSTITIAL_AD,
+} from "./constants";
 
-const API_KEY = '49afe9e3340049b78dd7e0fcb74bcb7f';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       gif: '',
-      count: 5,
+      count: 7,
       tag: 'dog',
+      lang: 'us',
       disabled: false,
-    }
+    };
+    AsyncStorage.getItem('@App:lang')
+      .then(lang => this.setState({ lang }))
+      .catch(err => this.setState({ lang: 'us' }));
+    AdMobInterstitial.setAdUnitId(INTERSTITIAL_AD);
   }
 
   requestImage() {
@@ -47,6 +55,11 @@ export default class App extends Component {
       .catch(_ => this.setState({ disabled: false }));
   }
 
+  showFullAd() {
+    AdMobInterstitial.requestAd()
+      .then(_ => AdMobInterstitial.showAd());
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -55,8 +68,20 @@ export default class App extends Component {
           style={styles.container}
           source={require('./bg.jpg')}
         />
+        <View>
+          <Image
+            style={styles.flagImage}
+            source={{ uri: FLAG_IMAGES.us}}
+            onClick={_ => this.setState({ lang: 'us' })}
+          />
+          <Image
+            style={styles.flagImage}
+            source={{ uri: FLAG_IMAGES.ru}}
+            onClick={_ => this.setState({ lang: 'ru' })}
+          />
+        </View>
         <Text style={styles.welcome}>
-          Свежие гифки!
+          {STRINGS[this.state.lang]}
         </Text>
         <Picker
           selectedValue={this.state.tag}
@@ -64,17 +89,21 @@ export default class App extends Component {
             height: 50,
             width: 100
           }}
-          onValueChange={(itemValue, itemIndex) => this.setState({ tag: itemValue })}
+          onValueChange={tag => this.setState({ tag })}
         >
-          {tags.keys().map(_ => <Picker.Item label={tags[_]} value={tags[_]} />)}
+          {TAGS.keys().map(_ => <Picker.Item label={TAGS[_][this.state.lang]} value={_} />)}
         </Picker>
-        {this.state.gif && <Image source={{uri: this.state.gif}} />}
-        <TouchableHighlight
+        {this.state.gif && <Image source={{ uri: this.state.gif }} />}
+        <AdMobBanner
+          adSize="smartBanner"
+          adUnitID={SMART_AD}
+        />
+        <TouchableOpacity
           onPress={_ => {
             if (this.state.count) {
               this.setState(_ => ({ count: _.count - 1 }));
             } else {
-              this.setState({ count: 5 });
+              this.setState({ count: 7 });
             }
             this.requestImage();
           }}
@@ -88,7 +117,7 @@ export default class App extends Component {
               />
               : <Text style={{fontSize: 48}}> ⭮ </Text>
           }
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -100,6 +129,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#3a3a3a',
+  },
+  flagImage: {
+    height: 50,
   },
   welcome: {
     margin: 10,
