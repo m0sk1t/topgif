@@ -100,12 +100,10 @@ export default class App extends Component {
         />
         <TouchableOpacity
           onPress={_ => {
-            if (this.state.count) {
-              this.setState(_ => ({ count: _.count - 1 }));
-            } else {
-              this.setState({ count: 7 });
-            }
-            this.requestImage();
+            this.state.count
+              ? this.setState(_ => ({ count: _.count - 1 }))
+              : this.setState({ count: 7 });
+            return this.requestImage();
           }}
           disabled={this.state.disabled}
         >
