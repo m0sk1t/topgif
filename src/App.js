@@ -38,7 +38,7 @@ export default class App extends Component {
     AsyncStorage.getItem('@App:lang')
       .then(lang => this.setState({ lang }))
       .catch(_ => this.setState({ lang: 'us' }));
-    AdMobInterstitial.setAdUnitId(INTERSTITIAL_AD);
+    // AdMobInterstitial.setAdUnitId(INTERSTITIAL_AD);
   }
 
   requestImage() {
@@ -56,12 +56,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <ImageBackground
-          resizeMode="cover"
-          style={styles.container}
-          source={require('./bg.jpg')}
-        />
+      <ImageBackground
+        resizeMode="cover"
+        style={styles.container}
+        source={require('./bg.jpg')}
+      >
         <View>
           <Image
             style={styles.flagImage}
@@ -77,7 +76,7 @@ export default class App extends Component {
         <Text style={styles.welcome}>
           {STRINGS[this.state.lang]}
         </Text>
-        <Picker
+        {/* <Picker
           selectedValue={this.state.tag}
           style={{
             height: 50,
@@ -85,13 +84,15 @@ export default class App extends Component {
           }}
           onValueChange={tag => this.setState({ tag })}
         >
-          {TAGS.keys().map(_ => <Picker.Item label={TAGS[_][this.state.lang]} value={_} />)}
-        </Picker>
-        {this.state.gif && <Image source={{ uri: this.state.gif }} />}
-        <AdMobBanner
+          {Object.keys(TAGS).map(_ => <Picker.Item key={_} label={TAGS[_][this.state.lang]} value={_} />)}
+        </Picker> */}
+        {this.state.gif
+          ? <Image source={{ uri: this.state.gif }} />
+          : null}
+        {/* <AdMobBanner
           adSize="smartBanner"
           adUnitID={SMART_AD}
-        />
+        /> */}
         <TouchableHighlight
           onPress={_ => {
             this.state.count
@@ -110,7 +111,7 @@ export default class App extends Component {
               : <Text style={{fontSize: 48}}> ⭮ </Text>
           }
         </TouchableHighlight>
-      </View>
+      </ImageBackground>
     );
   }
 }
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3a3a3a',
+    // backgroundColor: '#3a3a3a',
   },
   flagImage: {
     height: 50,
