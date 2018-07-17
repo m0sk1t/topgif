@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   Text,
@@ -13,13 +7,13 @@ import {
   StyleSheet,
   AsyncStorage,
   ImageBackground,
-  TouchableOpacity,
   ActivityIndicator,
+  TouchableHighlight,
 } from 'react-native';
 import {
   AdMobBanner,
   AdMobInterstitial,
-} from "react-native-admob";
+} from 'react-native-admob';
 
 import {
   TAGS,
@@ -28,7 +22,7 @@ import {
   SMART_AD,
   FLAG_IMAGES,
   INTERSTITIAL_AD,
-} from "./constants";
+} from './constants';
 
 
 export default class App extends Component {
@@ -43,7 +37,7 @@ export default class App extends Component {
     };
     AsyncStorage.getItem('@App:lang')
       .then(lang => this.setState({ lang }))
-      .catch(err => this.setState({ lang: 'us' }));
+      .catch(_ => this.setState({ lang: 'us' }));
     AdMobInterstitial.setAdUnitId(INTERSTITIAL_AD);
   }
 
@@ -98,7 +92,7 @@ export default class App extends Component {
           adSize="smartBanner"
           adUnitID={SMART_AD}
         />
-        <TouchableOpacity
+        <TouchableHighlight
           onPress={_ => {
             this.state.count
               ? this.setState(_ => ({ count: _.count - 1 }))
@@ -115,7 +109,7 @@ export default class App extends Component {
               />
               : <Text style={{fontSize: 48}}> ⭮ </Text>
           }
-        </TouchableOpacity>
+        </TouchableHighlight>
       </View>
     );
   }
